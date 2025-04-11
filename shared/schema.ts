@@ -1,4 +1,5 @@
-import { pgTable, text, serial, integer, boolean, date, timestamp, real } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, real } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -72,6 +73,34 @@ export const goals = pgTable("goals", {
 export const insertGoalSchema = createInsertSchema(goals).omit({
   id: true,
 });
+
+// Define relations
+export const usersRelations = relations(users, ({ many }) => ({
+  workouts: many(workouts),
+  measurements: many(measurements),
+  goals: many(goals),
+}));
+
+export const workoutsRelations = relations(workouts, ({ one }) => ({
+  user: one(users, {
+    fields: [workouts.userId],
+    references: [users.id]
+  }),
+}));
+
+export const measurementsRelations = relations(measurements, ({ one }) => ({
+  user: one(users, {
+    fields: [measurements.userId],
+    references: [users.id]
+  }),
+}));
+
+export const goalsRelations = relations(goals, ({ one }) => ({
+  user: one(users, {
+    fields: [goals.userId],
+    references: [users.id]
+  }),
+}));
 
 // Define types
 export type User = typeof users.$inferSelect;

@@ -4,6 +4,8 @@ import {
   measurements, type Measurement, type InsertMeasurement,
   goals, type Goal, type InsertGoal
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 // Storage interface
 export interface IStorage {
